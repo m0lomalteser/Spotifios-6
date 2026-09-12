@@ -1,0 +1,9 @@
+Package: com.yourname.foxmusiclegacy
+Name: FoxMusicLegacy
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 6.0)
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Legacy iOS 6 Spotify Client for iPhone 4s
+Maintainer: Lasse Lauwerys
+Author: Lasse Lauwerys
+Section: Applications

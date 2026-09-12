@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build with Xcode
-    runs-on: macos-13  # macOS Ventura bietet noch gute Kompatibilität mit älteren Command Line Tools
+    runs-on: macos-14 #macOS Ventura bietet noch gute Kompatibilität mit älteren Command Line Tools
 
     steps:
       - name: Checkout Repository

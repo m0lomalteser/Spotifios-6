@@ -1,0 +1,32 @@
+name: Build iOS 6 App with Theos
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Theos Environment
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "$HOME/theos/bin" >> $GITHUB_PATH
+
+      - name: Install Legacy iOS SDK (iOS 6.1 / 7.1)
+        run: |
+          git clone https://github.com/xybp88/iOS-SDKs.git $HOME/ios-sdks
+          # Kopiere das alte SDK in den Theos SDKs Ordner, damit armv7 kompiliert werden kann
+          cp -r $HOME/ios-sdks/iPhoneOS6.1.sdk $HOME/theos/sdks/ || cp -r $HOME/ios-sdks/iPhoneOS7.1.sdk $HOME/theos/sdks/
+
+      - name: Build Package
+        run: |
+          # Baut das Projekt im klassischen Rootful-Modus für armv7
+          make FINALPACKAGE=1

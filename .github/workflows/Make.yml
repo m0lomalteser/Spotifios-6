@@ -29,6 +29,13 @@ jobs:
           mkdir -p $HOME/theos/sdks
           cp -r $HOME/legacy-sdks/iPhoneOS6.1.sdk $HOME/theos/sdks/
 
-      - name: Build Package
+      - name: Build and Package App
         run: |
           make FINALPACKAGE=1
+          make package
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FoxMusicLegacy-IPA
+          path: packages/*.ipa

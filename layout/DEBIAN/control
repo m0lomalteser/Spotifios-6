@@ -7,3 +7,5 @@ Description: Legacy iOS 6 Spotify Client for iPhone 4s
 Maintainer: Lasse Lauwerys
 Author: Lasse Lauwerys
 Section: Applications
+DEB_COMPRESSION = gzip
+

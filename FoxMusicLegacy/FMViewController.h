@@ -10,7 +10,8 @@
 
 @interface FMViewController : UIViewController
 
-@property IBOutlet UILabel *testText;
+@property (nonatomic, retain) IBOutlet UILabel *testText;
+
 
 - (IBAction)test:(id)sender;
 

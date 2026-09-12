@@ -34,7 +34,7 @@ jobs:
           make FINALPACKAGE=1
           make package
 
-            - name: Convert DEB Compression to Gzip
+      - name: Convert DEB Compression to Gzip
         run: |
           # Gehe in den Paket-Ordner
           cd packages

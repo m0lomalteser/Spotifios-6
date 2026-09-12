@@ -34,6 +34,47 @@ jobs:
           make FINALPACKAGE=1
           make package
 
+            - name: Convert DEB Compression to Gzip
+        run: |
+          # Gehe in den Paket-Ordner
+          cd packages
+          DEB_FILE=$(ls *.deb | head -n 1)
+          echo "Processing $DEB_FILE..."
+          
+          # 1. Erstelle einen Arbeitsordner
+          mkdir -p work
+          cd work
+          
+          # 2. Entpacke das .deb mit ar (funktioniert plattformübergreifend)
+          ar -x ../$DEB_FILE
+          
+          # 3. Wenn data.tar.lzma / data.tar.xz vorliegt, zu gzip konvertieren
+          if [ -f data.tar.lzma ]; then
+            brew install xz
+            lzma -d data.tar.lzma
+            gzip data.tar
+          elif [ -f data.tar.xz ]; then
+            brew install xz
+            xz -d data.tar.xz
+            gzip data.tar
+          fi
+          
+          # 4. Kontrolliere ob control.tar.lzma / control.tar.xz existiert
+          if [ -f control.tar.lzma ]; then
+            lzma -d control.tar.lzma
+            gzip control.tar
+          elif [ -f control.tar.xz ]; then
+            xz -d control.tar.xz
+            gzip control.tar
+          fi
+          
+          # 5. Baue das .deb mit ar und gzip-komprimierten Tarballs neu zusammen
+          # Ein Debian-Paket erwartet im ar-Archiv: debian-binary, control.tar.gz, data.tar.gz
+          ar -r ../fixed_$DEB_FILE debian-binary control.tar.gz data.tar.gz
+          cd ..
+          rm -rf work
+
+
       - name: Upload DEB Artifact
         uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,50 @@
+name: Build iOS Project
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    name: Build with Xcode
+    runs-on: macos-13  # macOS Ventura bietet noch gute Kompatibilität mit älteren Command Line Tools
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode Version
+        run: |
+          # Listet verfügbare Xcodes auf dem Runner auf (zur Kontrolle)
+          ls -la /Applications/
+          sudo xcode-select -switch /Applications/Xcode_14.2.app
+          xcodebuild -version
+
+      - name: Build Project
+        run: |
+          # Falls du ein Workspace hast, nutze -workspace anstelle von -project.
+          # Ersetze "FoxMusic" durch dein echtes Schema (kannst du mit 'xcodebuild -list' prüfen).
+          xcodebuild -project FoxMusic.xcodeproj \
+                     -scheme FoxMusic \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build
+        
+      - name: Package App
+        run: |
+          # Erstellt einen Payload-Ordner für das App-Bundle zur einfacheren Weiterverarbeitung
+          mkdir -p Payload
+          # Passe den Pfad zum Build-Ergebnis an, falls dein Target anders heißt
+          cp -R ~/Library/Developer/Xcode/DerivedData/FoxMusic-*/Build/Products/Release-iphoneos/FoxMusic.app Payload/
+          zip -r FoxMusic-iOS.zip Payload
+        
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: FoxMusic-App-Bundle
+          path: FoxMusic-iOS.zip

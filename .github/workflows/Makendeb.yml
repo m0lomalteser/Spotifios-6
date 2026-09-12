@@ -1,0 +1,41 @@
+name: Build iOS 6 DEB with Theos
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Theos Environment
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "$HOME/theos/bin" >> $GITHUB_PATH
+
+      - name: Install ldid
+        run: brew install ldid
+
+      - name: Download Legacy iOS 6.1 SDK
+        run: |
+          git clone --depth 1 https://github.com/EachAndOther/Legacy-iOS-SDKs.git $HOME/legacy-sdks
+          mkdir -p $HOME/theos/sdks
+          cp -r $HOME/legacy-sdks/iPhoneOS6.1.sdk $HOME/theos/sdks/
+
+      - name: Build and Package DEB
+        run: |
+          make FINALPACKAGE=1
+          make package
+
+      - name: Upload DEB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FoxMusicLegacy-DEB
+          path: packages/*.deb

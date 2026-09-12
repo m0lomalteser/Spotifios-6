@@ -3,8 +3,9 @@ ARCHS = armv7
 
 include $(THEOS)/makefiles/common.mk
 
-APPLICATION_NAME = FoxMusic
-FoxMusic_FILES = $(wildcard *.m) $(wildcard *.c)
-FoxMusic_FRAMEWORKS = Foundation UIKit CoreGraphics AVFoundation
+APPLICATION_NAME = FoxMusicLegacy
+FoxMusicLegacy_FILES = $(wildcard FoxMusicLegacy/*.m) $(wildcard FoxMusicLegacy/*.c)
+FoxMusicLegacy_CFLAGS = -IFoxMusicLegacy
+FoxMusicLegacy_FRAMEWORKS = Foundation UIKit CoreGraphics AVFoundation
 
 include $(THEOS_MAKE_PATH)/application.mk

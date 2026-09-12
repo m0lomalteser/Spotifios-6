@@ -20,13 +20,13 @@ jobs:
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "$HOME/theos/bin" >> $GITHUB_PATH
 
-      - name: Install Legacy iOS SDK (iOS 6.1 / 7.1)
+      - name: Install Legacy iOS SDK
         run: |
-          git clone https://github.com/xybp88/iOS-SDKs.git $HOME/ios-sdks
-          # Kopiere das alte SDK in den Theos SDKs Ordner, damit armv7 kompiliert werden kann
-          cp -r $HOME/ios-sdks/iPhoneOS6.1.sdk $HOME/theos/sdks/ || cp -r $HOME/ios-sdks/iPhoneOS7.1.sdk $HOME/theos/sdks/
+          mkdir -p $HOME/theos/sdks
+          curl -L -o $HOME/sdk.zip https://github.com/xybp88/iOS-SDKs/archive/refs/heads/master.zip
+          unzip -q $HOME/sdk.zip -d $HOME/sdk-extracted
+          cp -r $HOME/sdk-extracted/iOS-SDKs-master/iPhoneOS6.1.sdk $HOME/theos/sdks/ || cp -r $HOME/sdk-extracted/iOS-SDKs-master/iPhoneOS7.1.sdk $HOME/theos/sdks/
 
       - name: Build Package
         run: |
-          # Baut das Projekt im klassischen Rootful-Modus für armv7
           make FINALPACKAGE=1

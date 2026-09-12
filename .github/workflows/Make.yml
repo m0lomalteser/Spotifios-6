@@ -1,4 +1,4 @@
-name: Build iOS 6 App with Theos
+name: Build iOS App with Theos
 
 on:
   push:
@@ -20,12 +20,9 @@ jobs:
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "$HOME/theos/bin" >> $GITHUB_PATH
 
-      - name: Install Legacy iOS SDK
+      - name: Install Theos SDKs
         run: |
-          mkdir -p $HOME/theos/sdks
-          curl -L -o $HOME/sdk.zip https://github.com/xybp88/iOS-SDKs/archive/refs/heads/master.zip
-          unzip -q $HOME/sdk.zip -d $HOME/sdk-extracted
-          cp -r $HOME/sdk-extracted/iOS-SDKs-master/iPhoneOS6.1.sdk $HOME/theos/sdks/ || cp -r $HOME/sdk-extracted/iOS-SDKs-master/iPhoneOS7.1.sdk $HOME/theos/sdks/
+          git clone https://github.com/theos/sdks.git $HOME/theos/sdks
 
       - name: Build Package
         run: |
